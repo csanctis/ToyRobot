@@ -295,15 +295,5 @@ namespace ToyRobot.Models
 				return validDirection;
 			}
 		}
-
-		private bool IsDirectionValid(DIRECTION direction)
-		{
-			bool isvalid = false;
-			foreach (string name in Enum.GetNames(typeof(DIRECTION)))
-			{
-				Console.WriteLine(name);
-			}
-			return isvalid;
-		}
 	}
 }
