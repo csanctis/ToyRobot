@@ -4,7 +4,7 @@ using Xunit;
 
 namespace ToyRobot.Tests
 {
-	public class UnitTest1
+	public class ToyRobotTest
 	{
 		[Fact]
 		public void CreateTableSurfaceTest()
