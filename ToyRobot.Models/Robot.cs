@@ -73,6 +73,10 @@ namespace ToyRobot.Models
 					_lastDirection = Rotate(command);
 					break;
 
+				case COMMAND.REPORT:
+					Report();
+					break;
+
 				default:
 					break;
 			}
@@ -166,6 +170,7 @@ namespace ToyRobot.Models
 
 		public string Report()
 		{
+			Console.WriteLine($"{_lastPosition.X},{_lastPosition.Y},{_lastDirection}");
 			return $"{_lastPosition.X},{_lastPosition.Y},{_lastDirection}";
 		}
 
