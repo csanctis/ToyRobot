@@ -24,6 +24,14 @@ namespace ToyRobot.Models
 
 	public class Robot
 	{
+		// UI symbols to represent the robot orientation
+		private string _northDirection => "^";
+
+		private string _southDirection => "v";
+		private string _eastDirection => ">";
+		private string _westDirection => "<";
+		private string _invalidDirection => "x";
+
 		// Allowed surface for the robot to roam
 		private TableSurface _surface;
 
@@ -143,6 +151,27 @@ namespace ToyRobot.Models
 					return _lastDirection;
 			}
 			return _lastDirection;
+		}
+
+		public string GetDIRECTIONymbol()
+		{
+			switch (_lastDirection)
+			{
+				case DIRECTION.NORTH:
+					return _northDirection;
+
+				case DIRECTION.SOUTH:
+					return _southDirection;
+
+				case DIRECTION.EAST:
+					return _eastDirection;
+
+				case DIRECTION.WEST:
+					return _westDirection;
+
+				default:
+					return _invalidDirection;
+			}
 		}
 
 		private bool Place(CommandDetails command)

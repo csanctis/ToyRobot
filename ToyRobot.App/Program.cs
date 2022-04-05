@@ -1,12 +1,12 @@
 ﻿using ToyRobot.Models;
 
-namespace MyApp // Note: actual namespace depends on the project name.
+namespace ToyRobot
 {
 	internal class Program
 	{
 		private static readonly CancellationTokenSource _cancelTokenSrc = new CancellationTokenSource();
-
-		private static Robot _robot = new Robot(new TableSurface(6, 6));
+		private static TableSurface _tableSurface = new TableSurface(6, 6);
+		private static Robot _robot = new Robot(_tableSurface);
 
 		private static void Main(string[] args)
 		{
@@ -62,6 +62,7 @@ namespace MyApp // Note: actual namespace depends on the project name.
 					if (command.IsValid)
 					{
 						_robot.ExecuteLastCommand();
+						_tableSurface.PrintTable();
 					}
 					else
 					{

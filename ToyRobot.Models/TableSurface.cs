@@ -1,4 +1,6 @@
-﻿namespace ToyRobot.Models
+﻿using System.Text;
+
+namespace ToyRobot.Models
 {
 	public class TableSurface
 	{
@@ -9,13 +11,7 @@
 		public int Rows => this._rows;
 		public int Columns => this._columns;
 
-		// UI symbols to represent the robot orientation
-		private string _northDirection => "^";
-
-		private string _southDirection => "v";
-		private string _eastDirection => ">";
-		private string _westDirection => "<";
-		private string _invalidDirection => "x";
+		private Robot _robotOnTable;
 
 		private string _noDirection => "O";
 
@@ -39,39 +35,51 @@
 
 		private void InitTable()
 		{
-			for (int column = _columns - 1; column >= 0; column--)
+			for (int row = 0; row < _rows; row++)
 			{
-				for (int row = 0; row < _rows; row++)
+				for (int column = 0; column < _columns; column++)
 				{
 					_tableSurface[row, column] = _noDirection;
 				}
 			}
 		}
 
-		public string GetRobotPosition(Robot robot)
+		private bool IsRobotInThisLocation(int x, int y)
 		{
-			return GetDIRECTIONymbol(robot.GetDirection());
+			return _robotOnTable.GetLocation().X == x && _robotOnTable.GetLocation().Y == y;
 		}
 
-		private string GetDIRECTIONymbol(DIRECTION direction)
+		public string PrintTable()
 		{
-			switch (direction)
+			StringBuilder sb = new StringBuilder();
+			for (int row = _rows - 1; row >= 0; row--)
 			{
-				case DIRECTION.NORTH:
-					return _northDirection;
-
-				case DIRECTION.SOUTH:
-					return _southDirection;
-
-				case DIRECTION.EAST:
-					return _eastDirection;
-
-				case DIRECTION.WEST:
-					return _westDirection;
-
-				default:
-					return _invalidDirection;
+				sb.AppendLine("");
+				for (int column = 0; column <= _columns - 1; column++)
+				{
+					_tableSurface[row, column] = GetDirectionSymbol(row, column);
+					sb.Append($"{_tableSurface[row, column]}");
+					sb.Append("   ");
+				}
 			}
+			return sb.ToString();
+		}
+
+		private string GetDirectionSymbol(int x, int y)
+		{
+			if (_robotOnTable != null &&
+				_robotOnTable.isRobotOnTable() &&
+				_robotOnTable.GetLocation().X == x + 1
+				&& _robotOnTable.GetLocation().Y == y + 1)
+			{
+				return _robotOnTable.GetDIRECTIONymbol();
+			}
+			return _noDirection;
+		}
+
+		public void AddRobotToTable(Robot robot)
+		{
+			_robotOnTable = robot;
 		}
 	}
 }

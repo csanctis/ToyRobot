@@ -6,14 +6,6 @@ namespace ToyRobot.Tests
 {
 	public class ToyRobotTest
 	{
-		[Fact]
-		public void CreateTableSurfaceTest()
-		{
-			var surface = new TableSurface(6, 6);
-			Assert.Equal(6, surface.Rows);
-			Assert.Equal(6, surface.Columns);
-		}
-
 		[Theory]
 		[InlineData("LEFT", COMMAND.LEFT)]
 		[InlineData("LeFT", COMMAND.LEFT)]
