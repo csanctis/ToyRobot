@@ -57,7 +57,8 @@ namespace ToyRobot.Models
 				sb.AppendLine("");
 				for (int column = 0; column <= _columns - 1; column++)
 				{
-					_tableSurface[row, column] = GetDirectionSymbol(row, column);
+					// X is the column and Y is the row.
+					_tableSurface[row, column] = GetDirectionSymbol(column, row);
 					sb.Append($"{_tableSurface[row, column]}");
 					sb.Append("   ");
 				}
@@ -65,12 +66,18 @@ namespace ToyRobot.Models
 			return sb.ToString();
 		}
 
+		/// <summary>
+		/// X is the column and Y is the row.
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <returns></returns>
 		private string GetDirectionSymbol(int x, int y)
 		{
 			if (_robotOnTable != null &&
 				_robotOnTable.isRobotOnTable() &&
-				_robotOnTable.GetLocation().X == x + 1
-				&& _robotOnTable.GetLocation().Y == y + 1)
+				_robotOnTable.GetLocation().X == x
+				&& _robotOnTable.GetLocation().Y == y)
 			{
 				return _robotOnTable.GetDIRECTIONymbol();
 			}
