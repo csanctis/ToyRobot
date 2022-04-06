@@ -15,6 +15,7 @@ namespace ToyRobot
 			CancellationToken cancelToken = _cancelTokenSrc.Token;
 
 			PrintInstructions();
+			_tableSurface.AddRobotToTable(_robot);
 
 			try
 			{
@@ -41,11 +42,18 @@ namespace ToyRobot
 			Console.WriteLine("==================================================================================");
 			Console.WriteLine("    This is simulation of a toy robot moving on a 6 x 6 square tabletop.");
 			Console.WriteLine("    Valid Commands:");
-			Console.WriteLine("* PLACE X, Y, <DIRECTION> (NORTH, SOUTH, EAST or WEST)");
-			Console.WriteLine("* MOVE (will move the toy robot one unit forward in the direction it is currently facing)");
-			Console.WriteLine("* LEFT (LEFT will rotate the robot 90 degrees in the specified direction without changing the position of the robot)");
-			Console.WriteLine("* RIGHT (RIGHT will rotate the robot 90 degrees in the specified direction without changing the position of the robot)");
-			Console.WriteLine("* REPORT will announce the X,Y and orientation of the robot.");
+			Console.WriteLine("* PLACE X,Y, <DIRECTION>");
+			Console.WriteLine("*	  (Position X, Y can be between 0,0 and 5,5)");
+			Console.WriteLine("*	  (Directions can be NORTH, SOUTH, EAST or WEST)");
+			Console.WriteLine("*	  (Example: PLACE 1,2,NORTH)");
+			Console.WriteLine("* MOVE");
+			Console.WriteLine("*      (Moves the toy robot one unit forward in the direction it is currently facing)");
+			Console.WriteLine("* LEFT");
+			Console.WriteLine("*      (Rotates the robot 90 degrees LEFT in the specified direction without changing the position of the robot)");
+			Console.WriteLine("* RIGHT");
+			Console.WriteLine("*      (Rotates the robot 90 degrees RIGHT in the specified direction without changing the position of the robot)");
+			Console.WriteLine("* REPORT ");
+			Console.WriteLine("*      Announces the X,Y and orientation of the robot.");
 			Console.WriteLine("* Press CTL+C to Terminate");
 			Console.WriteLine();
 			Console.WriteLine("==================================================================================");
@@ -62,7 +70,7 @@ namespace ToyRobot
 					if (command.IsValid)
 					{
 						_robot.ExecuteLastCommand();
-						_tableSurface.PrintTable();
+						Console.WriteLine(_tableSurface.PrintTable());
 					}
 					else
 					{

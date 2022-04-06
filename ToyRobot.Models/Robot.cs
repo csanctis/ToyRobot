@@ -95,19 +95,19 @@ namespace ToyRobot.Models
 			switch (_lastDirection)
 			{
 				case DIRECTION.NORTH:
-					_lastPosition.Y = _lastPosition.Y + 1;
+					_lastPosition.Y = _lastPosition.Y + 1 < _surface.Rows ? _lastPosition.Y + 1 : _lastPosition.Y;
 					return ShiftPosition(_lastPosition, _lastDirection);
 
 				case DIRECTION.SOUTH:
-					_lastPosition.Y = _lastPosition.Y - 1;
+					_lastPosition.Y = _lastPosition.Y - 1 >= 0 ? _lastPosition.Y - 1 : _lastPosition.Y;
 					return ShiftPosition(_lastPosition, _lastDirection);
 
 				case DIRECTION.EAST:
-					_lastPosition.X = _lastPosition.X + 1;
+					_lastPosition.X = _lastPosition.X + 1 < _surface.Columns ? _lastPosition.X + 1 : _lastPosition.X;
 					return ShiftPosition(_lastPosition, _lastDirection);
 
 				case DIRECTION.WEST:
-					_lastPosition.X = _lastPosition.X - 1;
+					_lastPosition.X = _lastPosition.X - 1 >= 0 ? _lastPosition.X - 1 : _lastPosition.X;
 					return ShiftPosition(_lastPosition, _lastDirection);
 
 				default:
