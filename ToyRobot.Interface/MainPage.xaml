@@ -19,7 +19,7 @@
 		<Border Grid.Column ="1" Background="#1f3d7a" />
 		<StackPanel Grid.Column="1" Margin="40,0,0,0" VerticalAlignment="Center">
 			<Grid Height="Auto" Background="#FF2F5CB6" Width="480" Name="TableSurfaceGrid">
-				<StackPanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" BorderBrush="#FF020202">
+				<!--<StackPanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">
 					<TextBlock Foreground="White" FontSize="50" Text="O" Name="text00" />
 				</StackPanel>
 				<StackPanel Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">
@@ -131,7 +131,7 @@
 				</StackPanel>
 				<StackPanel Grid.Row="5" Grid.Column="5" VerticalAlignment="Center" HorizontalAlignment="Center">
 					<TextBlock Foreground="White" FontSize="50" Text="O" />
-				</StackPanel>
+				</StackPanel>-->
 
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
@@ -150,7 +150,6 @@
 					<ColumnDefinition Width="80" />
 				</Grid.ColumnDefinitions>
 			</Grid>
-			<!--<TextBlock Foreground="White" FontSize="50" Text="Partially Cloudy" />-->
 		</StackPanel>
 	</Grid>
 </Page>
