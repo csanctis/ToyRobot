@@ -28,11 +28,6 @@ namespace ToyRobot.Models
 			InitTable();
 		}
 
-		public string[,] GetTableSurface()
-		{
-			return _tableSurface;
-		}
-
 		private void InitTable()
 		{
 			for (int row = 0; row < _rows; row++)
