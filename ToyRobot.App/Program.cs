@@ -39,24 +39,24 @@ namespace ToyRobot
 		{
 			Console.ForegroundColor = ConsoleColor.White;
 			//toy robot moving on a 6 x 6 square tabletop
-			Console.WriteLine("==================================================================================");
-			Console.WriteLine("    This is simulation of a toy robot moving on a 6 x 6 square tabletop.");
-			Console.WriteLine("    Valid Commands:");
-			Console.WriteLine("* PLACE X,Y, <DIRECTION>");
-			Console.WriteLine("*	  (Position X, Y can be between 0,0 and 5,5)");
-			Console.WriteLine("*	  (Directions can be NORTH, SOUTH, EAST or WEST)");
-			Console.WriteLine("*	  (Example: PLACE 1,2,NORTH)");
-			Console.WriteLine("* MOVE");
-			Console.WriteLine("*      (Moves the toy robot one unit forward in the direction it is currently facing)");
-			Console.WriteLine("* LEFT");
-			Console.WriteLine("*      (Rotates the robot 90 degrees LEFT in the specified direction without changing the position of the robot)");
-			Console.WriteLine("* RIGHT");
-			Console.WriteLine("*      (Rotates the robot 90 degrees RIGHT in the specified direction without changing the position of the robot)");
-			Console.WriteLine("* REPORT ");
-			Console.WriteLine("*      Announces the X,Y and orientation of the robot.");
-			Console.WriteLine("* Press CTL+C to Terminate");
-			Console.WriteLine();
-			Console.WriteLine("==================================================================================");
+			Write(null, "==================================================================================");
+			Write(null, "    This is simulation of a toy robot moving on a 6 x 6 square tabletop.");
+			Write(null, "    Valid Commands:");
+			Write(ConsoleColor.Green, "* PLACE X,Y, <DIRECTION>");
+			Write(null, "*	  (Position X, Y can be between 0,0 and 5,5)");
+			Write(null, "*	  (Directions can be NORTH, SOUTH, EAST or WEST)");
+			Write(null, "*	  (Example: PLACE 1,2,NORTH)");
+			Write(ConsoleColor.Green,"* MOVE");
+			Write(null, "*      (Moves the toy robot one unit forward in the direction it is currently facing)");
+			Write(ConsoleColor.Green, "* LEFT");
+			Write(null, "*      (Rotates the robot 90 degrees LEFT in the specified direction without changing the position of the robot)");
+			Write(ConsoleColor.Green, "* RIGHT");
+			Write(null, "*      (Rotates the robot 90 degrees RIGHT in the specified direction without changing the position of the robot)");
+			Write(ConsoleColor.Green, "* REPORT ");
+			Write(null, "*      Announces the X,Y and orientation of the robot.");
+			Write(ConsoleColor.Green, "* Press CTL+C to Terminate");
+			Write();
+			Write(null, "==================================================================================");
 		}
 
 		private static void ListenForInput()
@@ -74,7 +74,7 @@ namespace ToyRobot
 				}
 				else
 				{
-					Console.WriteLine("Invalid Command");
+					Write(ConsoleColor.Red, "Invalid Command");
 					PrintInstructions();
 				}
 			}
@@ -87,6 +87,17 @@ namespace ToyRobot
 			e.Cancel = true;
 			Console.WriteLine("Cancelling...");
 			_cancelTokenSrc.Cancel();
+		}
+		
+		private static void Write(params object[] oo)
+		{
+			foreach(var o in oo)
+				if(o == null)
+					Console.ResetColor();
+				else if(o is ConsoleColor)
+					Console.ForegroundColor = (ConsoleColor)o;
+				else
+					Console.WriteLine(o.ToString());
 		}
 	}
 }
