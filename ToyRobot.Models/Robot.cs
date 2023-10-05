@@ -2,7 +2,7 @@ using System.Drawing;
 
 namespace ToyRobot.Models
 {
-	public enum DIRECTION
+	public enum Direction
 	{
 		NORTH = 1,
 		SOUTH = 2,
@@ -12,7 +12,7 @@ namespace ToyRobot.Models
 		EMPTY = 0
 	}
 
-	public enum COMMAND
+	public enum Command
 	{
 		PLACE = 1,
 		MOVE = 2,
@@ -38,7 +38,7 @@ namespace ToyRobot.Models
 		// Position awaress of the robot
 		private Point _lastPosition = new Point(-1, -1);
 
-		private DIRECTION _lastDirection = DIRECTION.EMPTY;
+		private Direction _lastDirection = Direction.EMPTY;
 
 		// This keeps track of all previous commands received by the robot
 		private List<CommandDetails> _commands = new List<CommandDetails>();
@@ -50,12 +50,9 @@ namespace ToyRobot.Models
 
 		private bool AssignCommand(CommandDetails command)
 		{
-			if (command.Command != COMMAND.INVALID)
-			{
-				_commands.Add(command);
-				return true;
-			}
-			return false;
+			if (command.Command == Command.INVALID) return false;
+			_commands.Add(command);
+			return true;
 		}
 
 		public void ExecuteLastCommand()
@@ -68,20 +65,20 @@ namespace ToyRobot.Models
 		{
 			switch (command.Command)
 			{
-				case COMMAND.PLACE:
+				case Command.PLACE:
 					Place(command);
 					break;
 
-				case COMMAND.MOVE:
+				case Command.MOVE:
 					Move();
 					break;
 
-				case COMMAND.LEFT:
-				case COMMAND.RIGHT:
+				case Command.LEFT:
+				case Command.RIGHT:
 					_lastDirection = Rotate(command);
 					break;
 
-				case COMMAND.REPORT:
+				case Command.REPORT:
 					Report();
 					break;
 
@@ -94,19 +91,19 @@ namespace ToyRobot.Models
 		{
 			switch (_lastDirection)
 			{
-				case DIRECTION.NORTH:
+				case Direction.NORTH:
 					_lastPosition.Y = _lastPosition.Y + 1 < _surface.Rows ? _lastPosition.Y + 1 : _lastPosition.Y;
 					return ShiftPosition(_lastPosition, _lastDirection);
 
-				case DIRECTION.SOUTH:
+				case Direction.SOUTH:
 					_lastPosition.Y = _lastPosition.Y - 1 >= 0 ? _lastPosition.Y - 1 : _lastPosition.Y;
 					return ShiftPosition(_lastPosition, _lastDirection);
 
-				case DIRECTION.EAST:
+				case Direction.EAST:
 					_lastPosition.X = _lastPosition.X + 1 < _surface.Columns ? _lastPosition.X + 1 : _lastPosition.X;
 					return ShiftPosition(_lastPosition, _lastDirection);
 
-				case DIRECTION.WEST:
+				case Direction.WEST:
 					_lastPosition.X = _lastPosition.X - 1 >= 0 ? _lastPosition.X - 1 : _lastPosition.X;
 					return ShiftPosition(_lastPosition, _lastDirection);
 
@@ -115,36 +112,36 @@ namespace ToyRobot.Models
 			}
 		}
 
-		private DIRECTION Rotate(CommandDetails command)
+		private Direction Rotate(CommandDetails command)
 		{
 			switch (_lastDirection)
 			{
-				case DIRECTION.NORTH:
-					if (command.Command == COMMAND.LEFT)
-						return DIRECTION.WEST;
-					if (command.Command == COMMAND.RIGHT)
-						return DIRECTION.EAST;
+				case Direction.NORTH:
+					if (command.Command == Command.LEFT)
+						return Direction.WEST;
+					if (command.Command == Command.RIGHT)
+						return Direction.EAST;
 					break;
 
-				case DIRECTION.SOUTH:
-					if (command.Command == COMMAND.LEFT)
-						return DIRECTION.EAST;
-					if (command.Command == COMMAND.RIGHT)
-						return DIRECTION.WEST;
+				case Direction.SOUTH:
+					if (command.Command == Command.LEFT)
+						return Direction.EAST;
+					if (command.Command == Command.RIGHT)
+						return Direction.WEST;
 					break;
 
-				case DIRECTION.EAST:
-					if (command.Command == COMMAND.LEFT)
-						return DIRECTION.NORTH;
-					if (command.Command == COMMAND.RIGHT)
-						return DIRECTION.SOUTH;
+				case Direction.EAST:
+					if (command.Command == Command.LEFT)
+						return Direction.NORTH;
+					if (command.Command == Command.RIGHT)
+						return Direction.SOUTH;
 					break;
 
-				case DIRECTION.WEST:
-					if (command.Command == COMMAND.LEFT)
-						return DIRECTION.SOUTH;
-					if (command.Command == COMMAND.RIGHT)
-						return DIRECTION.NORTH;
+				case Direction.WEST:
+					if (command.Command == Command.LEFT)
+						return Direction.SOUTH;
+					if (command.Command == Command.RIGHT)
+						return Direction.NORTH;
 					break;
 
 				default:
@@ -153,20 +150,20 @@ namespace ToyRobot.Models
 			return _lastDirection;
 		}
 
-		public string GetDIRECTIONymbol()
+		public string GetDirectionSymbol()
 		{
 			switch (_lastDirection)
 			{
-				case DIRECTION.NORTH:
+				case Direction.NORTH:
 					return _northDirection;
 
-				case DIRECTION.SOUTH:
+				case Direction.SOUTH:
 					return _southDirection;
 
-				case DIRECTION.EAST:
+				case Direction.EAST:
 					return _eastDirection;
 
-				case DIRECTION.WEST:
+				case Direction.WEST:
 					return _westDirection;
 
 				default:
@@ -176,25 +173,23 @@ namespace ToyRobot.Models
 
 		private bool Place(CommandDetails command)
 		{
-			if (command.Direction != DIRECTION.INVALID && command.Direction != DIRECTION.EMPTY)
+			if (command.Direction != Direction.INVALID && command.Direction != Direction.EMPTY)
 				return ShiftPosition(command.Position, command.Direction);
 
 			return false;
 		}
 
-		private bool ShiftPosition(Point position, DIRECTION direction)
+		private bool ShiftPosition(Point position, Direction direction)
 		{
 			var isValid = ValidatePosition(position.X, position.Y);
-			if (isValid)
-			{
-				// Update position and get new symbol
-				_lastPosition = position;
-				if (direction != DIRECTION.EMPTY)
-					_lastDirection = direction;
+			if (!isValid) return false;
+			
+			// Update position and get new symbol
+			_lastPosition = position;
+			if (direction != Direction.EMPTY)
+				_lastDirection = direction;
 
-				return true;
-			}
-			return false;
+			return true;
 		}
 
 		public string Report()
@@ -208,7 +203,7 @@ namespace ToyRobot.Models
 			return _lastPosition;
 		}
 
-		public DIRECTION GetDirection()
+		public Direction GetDirection()
 		{
 			return _lastDirection;
 		}
@@ -218,39 +213,38 @@ namespace ToyRobot.Models
 			return (_lastPosition.X >= 0 && _lastPosition.Y >= 0);
 		}
 
-		public CommandDetails ParseInputAndGenerageCommand(string input)
+		public CommandDetails ParseInputAndGenerateCommand(string input)
 		{
 			var commandDetail = new CommandDetails
 			{
 				OriginalInput = input,
-				Command = COMMAND.INVALID,
-				Direction = DIRECTION.EMPTY,
+				Command = Command.INVALID,
+				Direction = Direction.EMPTY,
 			};
 
-			if (!String.IsNullOrEmpty(input))
+			if (string.IsNullOrEmpty(input)) return commandDetail;
+			
+			// Sanitizing input
+			input = input.ToUpper().TrimStart().TrimEnd();
+			var arguments = input.Split(',');
+
+			// PLACE command is the only one with multiple parameters
+			if (arguments.Length > 1)
 			{
-				// Sanitizing input
-				input = input.ToUpper().TrimStart().TrimEnd();
-				var arguments = input.Split(',');
+				var split = input.Substring(input.IndexOf(" ", StringComparison.Ordinal)).Split(',');
 
-				// PLACE command is the only one with multiple parameters
-				if (arguments.Length > 1)
+				commandDetail = ValidateArguments(split);
+				// If number of arguments not as expected, return error.
+				if (commandDetail.Command != Command.INVALID &&
+				    commandDetail.Direction != Direction.INVALID)
 				{
-					var split = input.Substring(input.IndexOf(" ")).Split(',');
-
-					commandDetail = ValidateArguments(split);
-					// If number of arguments not as expected, return error.
-					if (commandDetail.Command != COMMAND.INVALID &&
-						commandDetail.Direction != DIRECTION.INVALID)
-					{
-						AssignCommand(commandDetail);
-					}
-				}
-				else
-				{
-					commandDetail.Command = GetCommand(input);
 					AssignCommand(commandDetail);
 				}
+			}
+			else
+			{
+				commandDetail.Command = GetCommand(input);
+				AssignCommand(commandDetail);
 			}
 			return commandDetail;
 		}
@@ -259,14 +253,14 @@ namespace ToyRobot.Models
 		{
 			var commandDetail = new CommandDetails
 			{
-				Command = COMMAND.INVALID,
-				Direction = DIRECTION.EMPTY,
+				Command = Command.INVALID,
+				Direction = Direction.EMPTY,
 				Position = new Point(-1, -1)
 			};
 
 			if (arguments.Length >= 2)
 			{
-				commandDetail.Command = COMMAND.PLACE;
+				commandDetail.Command = Command.PLACE;
 				var success = int.TryParse(arguments[0], out int posX);
 				var success2 = int.TryParse(arguments[1], out int posY);
 				if (arguments.Length > 2)
@@ -284,7 +278,7 @@ namespace ToyRobot.Models
 				}
 				else
 				{
-					commandDetail.Command = COMMAND.INVALID;
+					commandDetail.Command = Command.INVALID;
 				}
 			}
 
@@ -296,37 +290,29 @@ namespace ToyRobot.Models
 			return !(x < 0 || x >= _surface.Rows) && !(y < 0 || y >= _surface.Columns);
 		}
 
-		private COMMAND GetCommand(string input)
+		private static Command GetCommand(string input)
 		{
-			if (String.IsNullOrEmpty(input))
+			if (string.IsNullOrEmpty(input))
 			{
-				return COMMAND.INVALID;
+				return Command.INVALID;
 			}
 			else
 			{
-				var isvalid = Enum.TryParse(input.ToUpper(), out COMMAND validInput);
-				if (!isvalid)
-				{
-					return COMMAND.INVALID;
-				}
-				return validInput;
+				var isValid = Enum.TryParse(input.ToUpper(), out Command validInput);
+				return isValid ? validInput : Command.INVALID;
 			}
 		}
 
-		private DIRECTION GetDirection(string direction)
+		private static Direction GetDirection(string direction)
 		{
-			if (String.IsNullOrEmpty(direction))
+			if (string.IsNullOrEmpty(direction))
 			{
-				return DIRECTION.EMPTY;
+				return Direction.EMPTY;
 			}
 			else
 			{
-				var isvalid = Enum.TryParse(direction.ToUpper(), out DIRECTION validDirection);
-				if (!isvalid)
-				{
-					return DIRECTION.INVALID;
-				}
-				return validDirection;
+				var isValid = Enum.TryParse(direction.ToUpper(), out Direction validDirection);
+				return !isValid ? Direction.INVALID : validDirection;
 			}
 		}
 	}

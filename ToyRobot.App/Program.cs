@@ -20,7 +20,7 @@ namespace ToyRobot
 			try
 			{
 				// thread that listens for keyboard input until cancelled
-				Task.Run(() => ListenForInput(), cancelToken);
+				Task.Run(ListenForInput, cancelToken);
 				// continue listening until cancel signal is sent
 				cancelToken.WaitHandle.WaitOne();
 				cancelToken.ThrowIfCancellationRequested();
@@ -64,19 +64,18 @@ namespace ToyRobot
 			while (true)
 			{
 				string userInput = Console.ReadLine();
-				if (!String.IsNullOrWhiteSpace(userInput))
+				if (string.IsNullOrWhiteSpace(userInput)) continue;
+				
+				var command = _robot.ParseInputAndGenerateCommand(userInput);
+				if (command.IsValid)
 				{
-					var command = _robot.ParseInputAndGenerageCommand(userInput);
-					if (command.IsValid)
-					{
-						_robot.ExecuteLastCommand();
-						Console.WriteLine(_tableSurface.PrintTable());
-					}
-					else
-					{
-						Console.WriteLine("Invalid Command");
-						PrintInstructions();
-					}
+					_robot.ExecuteLastCommand();
+					Console.WriteLine(_tableSurface.PrintTable());
+				}
+				else
+				{
+					Console.WriteLine("Invalid Command");
+					PrintInstructions();
 				}
 			}
 		}

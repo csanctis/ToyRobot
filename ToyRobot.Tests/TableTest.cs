@@ -14,8 +14,8 @@ namespace ToyRobot.Tests
 			Robot robot = new Robot(surface);
 			surface.AddRobotToTable(robot);
 
-			var commandParsed = robot.ParseInputAndGenerageCommand("PLACE 5,2,NORTH");
-			Assert.True(commandParsed.Command == COMMAND.PLACE);
+			var commandParsed = robot.ParseInputAndGenerateCommand("PLACE 5,2,NORTH");
+			Assert.True(commandParsed.Command == Command.PLACE);
 
 			robot.ExecuteLastCommand();
 
@@ -42,8 +42,8 @@ namespace ToyRobot.Tests
 			Robot robot = new Robot(surface);
 			surface.AddRobotToTable(robot);
 
-			var commandParsed = robot.ParseInputAndGenerageCommand("PLACE 0,0,SOUTH");
-			Assert.True(commandParsed.Command == COMMAND.PLACE);
+			var commandParsed = robot.ParseInputAndGenerateCommand("PLACE 0,0,SOUTH");
+			Assert.True(commandParsed.Command == Command.PLACE);
 
 			robot.ExecuteLastCommand();
 
@@ -70,8 +70,8 @@ namespace ToyRobot.Tests
 			Robot robot = new Robot(surface);
 			surface.AddRobotToTable(robot);
 
-			var commandParsed = robot.ParseInputAndGenerageCommand("PLACE 5,5,WEST");
-			Assert.True(commandParsed.Command == COMMAND.PLACE);
+			var commandParsed = robot.ParseInputAndGenerateCommand("PLACE 5,5,WEST");
+			Assert.True(commandParsed.Command == Command.PLACE);
 
 			robot.ExecuteLastCommand();
 

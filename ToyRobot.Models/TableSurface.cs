@@ -13,7 +13,7 @@ namespace ToyRobot.Models
 
 		private Robot _robotOnTable;
 
-		private string _noDirection => "O";
+		private static string _noDirection => "O";
 
 		/// <summary>
 		/// Creates a new Surface Table with the specified length
@@ -44,14 +44,9 @@ namespace ToyRobot.Models
 			}
 		}
 
-		private bool IsRobotInThisLocation(int x, int y)
-		{
-			return _robotOnTable.GetLocation().X == x && _robotOnTable.GetLocation().Y == y;
-		}
-
 		public string PrintTable()
 		{
-			StringBuilder sb = new StringBuilder();
+			var sb = new StringBuilder();
 			for (int row = _rows - 1; row >= 0; row--)
 			{
 				sb.AppendLine("");
@@ -74,12 +69,11 @@ namespace ToyRobot.Models
 		/// <returns></returns>
 		private string GetDirectionSymbol(int x, int y)
 		{
-			if (_robotOnTable != null &&
-				_robotOnTable.isRobotOnTable() &&
-				_robotOnTable.GetLocation().X == x
-				&& _robotOnTable.GetLocation().Y == y)
+			if (_robotOnTable.isRobotOnTable() &&
+			    _robotOnTable.GetLocation().X == x
+			    && _robotOnTable.GetLocation().Y == y)
 			{
-				return _robotOnTable.GetDIRECTIONymbol();
+				return _robotOnTable.GetDirectionSymbol();
 			}
 			return _noDirection;
 		}
