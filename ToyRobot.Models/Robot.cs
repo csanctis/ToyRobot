@@ -1,194 +1,208 @@
 using System.Drawing;
+using System.Text;
 using ToyRobot.Models.Extensions;
 
-namespace ToyRobot.Models
+namespace ToyRobot.Models;
+
+public class Robot
 {
-	public class Robot
-	{
-		// UI symbols to represent the robot orientation
-		private string _northDirection => "^";
+    // This keeps track of all previous commands received by the robot
+    private readonly List<CommandDetails> _commandsList = new();
 
-		private string _southDirection => "v";
-		private string _eastDirection => ">";
-		private string _westDirection => "<";
-		private string _invalidDirection => "x";
+    private Direction _lastDirection = Direction.EMPTY;
 
-		// Allowed surface for the robot to roam
-		private TableSurface _surface;
+    // Position awareness of the robot
+    private Point _lastPosition = new(-1, -1);
 
-		// Position awareness of the robot
-		private Point _lastPosition = new Point(-1, -1);
+    // Allowed surface for the robot to roam
+    private readonly TableSurface _surface;
 
-		private Direction _lastDirection = Direction.EMPTY;
+    public Robot(TableSurface surface)
+    {
+        _surface = surface;
+    }
 
-		// This keeps track of all previous commands received by the robot
-		private List<CommandDetails> _commandsList = new();
+    // UI symbols to represent the robot orientation
+    private string _northDirection => "^";
 
-		public Robot(TableSurface surface)
-		{
-			_surface = surface;
-		}
+    private string _southDirection => "v";
+    private string _eastDirection => ">";
+    private string _westDirection => "<";
+    private string _invalidDirection => "x";
 
-		public void ExecuteCommand(CommandDetails command)
-		{
-			// Keep history of all commands
+    public bool ExecuteCommand(CommandDetails command)
+    {
+        if (IsRobotOnTable() || command.Command == Command.PLACE)
+        {
+            // Keep history of all commands
             _commandsList.Add(command);
 
             switch (command.Command)
-			{
-				case Command.PLACE:
-					Place(command);
-					break;
+            {
+                case Command.PLACE:
+                    return Place(command);
 
-				case Command.MOVE:
-					Move();
-					break;
+                case Command.MOVE:
+                    return Move();
 
-				case Command.LEFT:
-				case Command.RIGHT:
-					_lastDirection = Rotate(command);
-					break;
+                case Command.LEFT:
+                case Command.RIGHT:
+                    _lastDirection = Rotate(command);
+                    return true;
 
-				case Command.REPORT:
-					Report();
-					break;
+                case Command.REPORT:
+                    Report();
+                    return true;
 
                 case Command.INVALID:
                 default:
-					break;
-			}
-		}
+                    return false;
+            }
+        }
 
-		private bool Move()
-		{
-			switch (_lastDirection)
-			{
-				case Direction.NORTH:
-					_lastPosition.Y = _lastPosition.Y + 1 < _surface.Rows ? _lastPosition.Y + 1 : _lastPosition.Y;
-					return ShiftPosition(_lastPosition, _lastDirection);
+        return false;
+    }
 
-				case Direction.SOUTH:
-					_lastPosition.Y = _lastPosition.Y - 1 >= 0 ? _lastPosition.Y - 1 : _lastPosition.Y;
-					return ShiftPosition(_lastPosition, _lastDirection);
+    private bool Move()
+    {
+        switch (_lastDirection)
+        {
+            case Direction.NORTH:
+                _lastPosition.Y = _lastPosition.Y + 1 < _surface.Rows ? _lastPosition.Y + 1 : _lastPosition.Y;
+                return ShiftPosition(_lastPosition, _lastDirection);
 
-				case Direction.EAST:
-					_lastPosition.X = _lastPosition.X + 1 < _surface.Columns ? _lastPosition.X + 1 : _lastPosition.X;
-					return ShiftPosition(_lastPosition, _lastDirection);
+            case Direction.SOUTH:
+                _lastPosition.Y = _lastPosition.Y - 1 >= 0 ? _lastPosition.Y - 1 : _lastPosition.Y;
+                return ShiftPosition(_lastPosition, _lastDirection);
 
-				case Direction.WEST:
-					_lastPosition.X = _lastPosition.X - 1 >= 0 ? _lastPosition.X - 1 : _lastPosition.X;
-					return ShiftPosition(_lastPosition, _lastDirection);
+            case Direction.EAST:
+                _lastPosition.X = _lastPosition.X + 1 < _surface.Columns ? _lastPosition.X + 1 : _lastPosition.X;
+                return ShiftPosition(_lastPosition, _lastDirection);
 
-				default:
-					return false;
-			}
-		}
+            case Direction.WEST:
+                _lastPosition.X = _lastPosition.X - 1 >= 0 ? _lastPosition.X - 1 : _lastPosition.X;
+                return ShiftPosition(_lastPosition, _lastDirection);
 
-		private Direction Rotate(CommandDetails command)
-		{
-			switch (_lastDirection)
-			{
-				case Direction.NORTH:
-					if (command.Command == Command.LEFT)
-						return Direction.WEST;
-					if (command.Command == Command.RIGHT)
-						return Direction.EAST;
-					break;
+            default:
+                return false;
+        }
+    }
 
-				case Direction.SOUTH:
-					if (command.Command == Command.LEFT)
-						return Direction.EAST;
-					if (command.Command == Command.RIGHT)
-						return Direction.WEST;
-					break;
+    private Direction Rotate(CommandDetails command)
+    {
+        switch (_lastDirection)
+        {
+            case Direction.NORTH:
+                if (command.Command == Command.LEFT)
+                    return Direction.WEST;
+                if (command.Command == Command.RIGHT)
+                    return Direction.EAST;
+                break;
 
-				case Direction.EAST:
-					if (command.Command == Command.LEFT)
-						return Direction.NORTH;
-					if (command.Command == Command.RIGHT)
-						return Direction.SOUTH;
-					break;
+            case Direction.SOUTH:
+                if (command.Command == Command.LEFT)
+                    return Direction.EAST;
+                if (command.Command == Command.RIGHT)
+                    return Direction.WEST;
+                break;
 
-				case Direction.WEST:
-					if (command.Command == Command.LEFT)
-						return Direction.SOUTH;
-					if (command.Command == Command.RIGHT)
-						return Direction.NORTH;
-					break;
+            case Direction.EAST:
+                if (command.Command == Command.LEFT)
+                    return Direction.NORTH;
+                if (command.Command == Command.RIGHT)
+                    return Direction.SOUTH;
+                break;
 
-				default:
-					return _lastDirection;
-			}
-			return _lastDirection;
-		}
+            case Direction.WEST:
+                if (command.Command == Command.LEFT)
+                    return Direction.SOUTH;
+                if (command.Command == Command.RIGHT)
+                    return Direction.NORTH;
+                break;
 
-		public string GetDirectionSymbol()
-		{
-			switch (_lastDirection)
-			{
-				case Direction.NORTH:
-					return _northDirection;
+            default:
+                return _lastDirection;
+        }
 
-				case Direction.SOUTH:
-					return _southDirection;
+        return _lastDirection;
+    }
 
-				case Direction.EAST:
-					return _eastDirection;
+    public string GetDirectionSymbol()
+    {
+        switch (_lastDirection)
+        {
+            case Direction.NORTH:
+                return _northDirection;
 
-				case Direction.WEST:
-					return _westDirection;
+            case Direction.SOUTH:
+                return _southDirection;
 
-				default:
-					return _invalidDirection;
-			}
-		}
+            case Direction.EAST:
+                return _eastDirection;
 
-		private bool Place(CommandDetails command)
-		{
-			if (command.Direction != Direction.INVALID && command.Direction != Direction.EMPTY)
-				return ShiftPosition(command.Position, command.Direction);
+            case Direction.WEST:
+                return _westDirection;
 
-			return false;
-		}
+            default:
+                return _invalidDirection;
+        }
+    }
 
-		private bool ShiftPosition(Point position, Direction direction)
-		{
-			var isValid = ValidatePosition(position.X, position.Y);
-			if (!isValid) return false;
-			
-			// Update position and get new symbol
-			_lastPosition = position;
-			if (direction != Direction.EMPTY)
-				_lastDirection = direction;
+    private bool Place(CommandDetails command)
+    {
+        if (command.IsDirectionValid())
+            return ShiftPosition(command.Position, command.Direction);
 
-			return true;
-		}
+        return false;
+    }
 
-		public string Report()
-		{
-			Console.WriteLine($"{_lastPosition.X},{_lastPosition.Y},{_lastDirection}");
-			return $"{_lastPosition.X},{_lastPosition.Y},{_lastDirection}";
-		}
+    private bool ShiftPosition(Point position, Direction direction)
+    {
+        var isValid = ValidatePosition(position.X, position.Y);
+        if (!isValid) return false;
 
-		public Point GetLocation()
-		{
-			return _lastPosition;
-		}
+        // Update position and get new symbol
+        _lastPosition = position;
+        if (direction != Direction.EMPTY)
+            _lastDirection = direction;
 
-		public Direction GetDirection()
-		{
-			return _lastDirection;
-		}
+        return true;
+    }
 
-		public bool IsRobotOnTable()
-		{
-			return _lastPosition is { X: >= 0, Y: >= 0 };
-		}
+    public string Report()
+    {
+        Console.WriteLine($"{_lastPosition.X},{_lastPosition.Y},{_lastDirection}");
+        return $"{_lastPosition.X},{_lastPosition.Y},{_lastDirection}";
+    }
 
-        private bool ValidatePosition(int x, int y)
-		{
-			return !(x < 0 || x >= _surface.Rows) && !(y < 0 || y >= _surface.Columns);
-		}
+    public Point GetLocation()
+    {
+        return _lastPosition;
+    }
 
-	}
+    public Direction GetDirection()
+    {
+        return _lastDirection;
+    }
+
+    public bool IsRobotOnTable()
+    {
+        return _lastPosition is { X: >= 0, Y: >= 0 };
+    }
+
+    private bool ValidatePosition(int x, int y)
+    {
+        return !(x < 0 || x >= _surface.Rows) && !(y < 0 || y >= _surface.Columns);
+    }
+
+    public string PrintAllPreviousCommand()
+    {
+        StringBuilder sBuilder = new StringBuilder();
+        foreach (var cd in _commandsList)
+        {
+            sBuilder.AppendLine(cd.OriginalInput);
+        }
+
+        return sBuilder.ToString();
+    }
 }

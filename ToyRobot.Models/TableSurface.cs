@@ -11,7 +11,7 @@ namespace ToyRobot.Models
 		public int Rows => this._rows;
 		public int Columns => this._columns;
 
-		private Robot _robotOnTable;
+		private Robot _robotOnTable = null;
 
 		private static string _noDirection => "O";
 
@@ -64,18 +64,24 @@ namespace ToyRobot.Models
 		/// <returns></returns>
 		private string GetDirectionSymbol(int x, int y)
 		{
-			if (_robotOnTable.IsRobotOnTable() &&
-			    _robotOnTable.GetLocation().X == x
-			    && _robotOnTable.GetLocation().Y == y)
+			if (_robotOnTable != null &&
+                _robotOnTable.IsRobotOnTable() &&
+                _robotOnTable.GetLocation().X == x
+                && _robotOnTable.GetLocation().Y == y)
 			{
 				return _robotOnTable.GetDirectionSymbol();
 			}
 			return _noDirection;
 		}
 
-		public void AddRobotToTable(Robot robot)
+		public bool AddRobotToTable(Robot robot)
 		{
-			_robotOnTable = robot;
-		}
+			// Robot can only be added to the table, if coordinates are valid
+            if (!robot.IsRobotOnTable()) return false;
+
+            _robotOnTable = robot;
+            return true;
+
+        }
 	}
 }

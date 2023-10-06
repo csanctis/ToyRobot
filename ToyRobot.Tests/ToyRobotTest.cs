@@ -31,7 +31,42 @@ namespace ToyRobot.Tests
 		}
 
 		[Fact]
-		public void ParseInvalidCommandTest()
+		public void ParseInvalidCommandRobotNotOnTableTest()
+		{
+			var surface = new TableSurface(6, 6);
+			var robot = new Robot(surface);
+            var commandParsed = RobotCommandFactory.ParseAndGenerateCommand("LEFT");
+			Assert.True(commandParsed.Command == Command.LEFT);
+
+            robot.ExecuteCommand(commandParsed);
+
+            Assert.Equal(Direction.EMPTY, robot.GetDirection());
+			Assert.Equal(-1, robot.GetLocation().X);
+			Assert.Equal(-1, robot.GetLocation().Y);
+
+			Assert.Equal("-1,-1,EMPTY", robot.Report());
+		}
+
+        [Fact]
+        public void ParseInvalidCommandTest0()
+        {
+            var surface = new TableSurface(6, 6);
+            var robot = new Robot(surface);
+            var commandParsed = RobotCommandFactory.ParseAndGenerateCommand("PLACE 6,1,north");
+            Assert.True(commandParsed.Command == Command.PLACE);
+
+            var result = robot.ExecuteCommand(commandParsed);
+			Assert.False(result);
+
+            Assert.Equal(Direction.EMPTY, robot.GetDirection());
+            Assert.Equal(-1, robot.GetLocation().X);
+            Assert.Equal(-1, robot.GetLocation().Y);
+
+            Assert.Equal("-1,-1,EMPTY", robot.Report());
+        }
+
+		[Fact]
+		public void ParseInvalidCommandTest1()
 		{
 			var surface = new TableSurface(6, 6);
 			var robot = new Robot(surface);
@@ -46,6 +81,22 @@ namespace ToyRobot.Tests
 
 			Assert.Equal("-1,-1,EMPTY", robot.Report());
 		}
+
+        [Fact]
+        public void NavigationTest0()
+        {
+            var surface = new TableSurface(6, 6);
+            var robot = new Robot(surface);
+            var commandParsed = RobotCommandFactory.ParseAndGenerateCommand("place 1,1,east");
+            Assert.True(commandParsed.Command == Command.PLACE);
+
+            robot.ExecuteCommand(commandParsed);
+
+            Assert.Equal(Direction.EAST, robot.GetDirection());
+            Assert.Equal(1, robot.GetLocation().X);
+            Assert.Equal(1, robot.GetLocation().Y);
+            Assert.Equal("1,1,EAST", robot.Report());
+        }
 
 		[Fact]
 		public void NavigationTest1()

@@ -7,4 +7,11 @@ public static class CommandDetailsExtension
         return commandDetails.Command != Command.INVALID &&
                commandDetails.Direction != Direction.INVALID;
     }
+
+    public static bool IsDirectionValid(this CommandDetails commandDetails)
+    {
+        return commandDetails.Direction != Direction.INVALID &&
+               commandDetails.Direction != Direction.EMPTY;
+    }
+
 }

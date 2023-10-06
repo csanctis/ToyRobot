@@ -8,7 +8,6 @@ namespace ToyRobot.Models.Commands
 {
     public interface IRobotCommand
     {
-
     }
 
     public class RobotCommand : IRobotCommand

@@ -17,7 +17,6 @@ public static class RobotCommandFactory
         // PLACE command is the only one with multiple parameters
         if (arguments.Length > 1)
         {
-            // If number of arguments not as expected, return error.
             commandDetail = ValidatePlaceArguments(arguments);
         }
         else
