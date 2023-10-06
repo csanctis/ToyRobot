@@ -1,27 +1,8 @@
 using System.Drawing;
+using ToyRobot.Models.Extensions;
 
 namespace ToyRobot.Models
 {
-	public enum Direction
-	{
-		NORTH = 1,
-		SOUTH = 2,
-		EAST = 3,
-		WEST = 4,
-		INVALID = -1,
-		EMPTY = 0
-	}
-
-	public enum Command
-	{
-		PLACE = 1,
-		MOVE = 2,
-		LEFT = 3,
-		RIGHT = 4,
-		REPORT = 5,
-		INVALID = -1
-	}
-
 	public class Robot
 	{
 		// UI symbols to represent the robot orientation
@@ -35,35 +16,25 @@ namespace ToyRobot.Models
 		// Allowed surface for the robot to roam
 		private TableSurface _surface;
 
-		// Position awaress of the robot
+		// Position awareness of the robot
 		private Point _lastPosition = new Point(-1, -1);
 
 		private Direction _lastDirection = Direction.EMPTY;
 
 		// This keeps track of all previous commands received by the robot
-		private List<CommandDetails> _commands = new List<CommandDetails>();
+		private List<CommandDetails> _commandsList = new();
 
 		public Robot(TableSurface surface)
 		{
 			_surface = surface;
 		}
 
-		private bool AssignCommand(CommandDetails command)
+		public void ExecuteCommand(CommandDetails command)
 		{
-			if (command.Command == Command.INVALID) return false;
-			_commands.Add(command);
-			return true;
-		}
+			// Keep history of all commands
+            _commandsList.Add(command);
 
-		public void ExecuteLastCommand()
-		{
-			if (_commands.Any())
-				ExecuteCommand(_commands.Last());
-		}
-
-		private void ExecuteCommand(CommandDetails command)
-		{
-			switch (command.Command)
+            switch (command.Command)
 			{
 				case Command.PLACE:
 					Place(command);
@@ -82,7 +53,8 @@ namespace ToyRobot.Models
 					Report();
 					break;
 
-				default:
+                case Command.INVALID:
+                default:
 					break;
 			}
 		}
@@ -208,112 +180,15 @@ namespace ToyRobot.Models
 			return _lastDirection;
 		}
 
-		public bool isRobotOnTable()
+		public bool IsRobotOnTable()
 		{
-			return (_lastPosition.X >= 0 && _lastPosition.Y >= 0);
+			return _lastPosition is { X: >= 0, Y: >= 0 };
 		}
 
-		public CommandDetails ParseInputAndGenerateCommand(string input)
-		{
-			var commandDetail = new CommandDetails
-			{
-				OriginalInput = input,
-				Command = Command.INVALID,
-				Direction = Direction.EMPTY,
-			};
-
-			if (string.IsNullOrEmpty(input)) return commandDetail;
-			
-			// Sanitizing input
-			input = input.ToUpper().TrimStart().TrimEnd();
-			var arguments = input.Split(',');
-
-			// PLACE command is the only one with multiple parameters
-			if (arguments.Length > 1)
-			{
-				var split = input.Substring(input.IndexOf(" ", StringComparison.Ordinal)).Split(',');
-
-				commandDetail = ValidateArguments(split);
-				// If number of arguments not as expected, return error.
-				if (commandDetail.Command != Command.INVALID &&
-				    commandDetail.Direction != Direction.INVALID)
-				{
-					AssignCommand(commandDetail);
-				}
-			}
-			else
-			{
-				commandDetail.Command = GetCommand(input);
-				AssignCommand(commandDetail);
-			}
-			return commandDetail;
-		}
-
-		private CommandDetails ValidateArguments(string[] arguments)
-		{
-			var commandDetail = new CommandDetails
-			{
-				Command = Command.INVALID,
-				Direction = Direction.EMPTY,
-				Position = new Point(-1, -1)
-			};
-
-			if (arguments.Length >= 2)
-			{
-				commandDetail.Command = Command.PLACE;
-				var success = int.TryParse(arguments[0], out int posX);
-				var success2 = int.TryParse(arguments[1], out int posY);
-				if (arguments.Length > 2)
-				{
-					commandDetail.Direction = GetDirection(arguments[2]);
-				}
-				else
-				{
-					commandDetail.Direction = _lastDirection;
-				}
-
-				if (success && success2 && ValidatePosition(posX, posY))
-				{
-					commandDetail.Position = new Point(posX, posY);
-				}
-				else
-				{
-					commandDetail.Command = Command.INVALID;
-				}
-			}
-
-			return commandDetail;
-		}
-
-		private bool ValidatePosition(int x, int y)
+        private bool ValidatePosition(int x, int y)
 		{
 			return !(x < 0 || x >= _surface.Rows) && !(y < 0 || y >= _surface.Columns);
 		}
 
-		private static Command GetCommand(string input)
-		{
-			if (string.IsNullOrEmpty(input))
-			{
-				return Command.INVALID;
-			}
-			else
-			{
-				var isValid = Enum.TryParse(input.ToUpper(), out Command validInput);
-				return isValid ? validInput : Command.INVALID;
-			}
-		}
-
-		private static Direction GetDirection(string direction)
-		{
-			if (string.IsNullOrEmpty(direction))
-			{
-				return Direction.EMPTY;
-			}
-			else
-			{
-				var isValid = Enum.TryParse(direction.ToUpper(), out Direction validDirection);
-				return !isValid ? Direction.INVALID : validDirection;
-			}
-		}
 	}
 }

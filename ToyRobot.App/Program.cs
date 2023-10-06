@@ -1,4 +1,6 @@
 ﻿using ToyRobot.Models;
+using ToyRobot.Models.Commands;
+using ToyRobot.Models.Extensions;
 
 namespace ToyRobot
 {
@@ -65,11 +67,13 @@ namespace ToyRobot
 			{
 				string userInput = Console.ReadLine();
 				if (string.IsNullOrWhiteSpace(userInput)) continue;
+
+                var commandDetails = RobotCommandFactory.ParseAndGenerateCommand(userInput);
 				
-				var command = _robot.ParseInputAndGenerateCommand(userInput);
-				if (command.IsValid)
+				// TODO Get rid of this from Robot
+				if (commandDetails.IsCommandValid())
 				{
-					_robot.ExecuteLastCommand();
+					_robot.ExecuteCommand(commandDetails);
 					Console.WriteLine(_tableSurface.PrintTable());
 				}
 				else

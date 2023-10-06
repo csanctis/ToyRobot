@@ -64,7 +64,7 @@ namespace ToyRobot.Models
 		/// <returns></returns>
 		private string GetDirectionSymbol(int x, int y)
 		{
-			if (_robotOnTable.isRobotOnTable() &&
+			if (_robotOnTable.IsRobotOnTable() &&
 			    _robotOnTable.GetLocation().X == x
 			    && _robotOnTable.GetLocation().Y == y)
 			{
