@@ -2,9 +2,7 @@
 
 public interface IRobotCommand
 {
-    public bool Move();
-    public bool Rotate(Instruction instruction);
-    public bool Place(Instruction instruction);
+    public bool ExecuteInstruction(Instruction  instruction);
 }
 
 public class RobotCommand : IRobotCommand
@@ -16,7 +14,35 @@ public class RobotCommand : IRobotCommand
         _robot = robot;
     }
 
-    public bool Move()
+    public bool ExecuteInstruction(Instruction instruction)
+    {
+        if (!_robot.IsRobotOnTable() && instruction.Command != RobotCommandFactory.Command.PLACE)
+            return false;
+
+        switch (instruction.Command)
+        {
+            case RobotCommandFactory.Command.PLACE:
+                return Place(instruction);
+
+            case RobotCommandFactory.Command.MOVE:
+                return Move();
+
+            case RobotCommandFactory.Command.LEFT:
+            case RobotCommandFactory.Command.RIGHT:
+                instruction.Direction = _robot.GetDirection();
+                return Rotate(instruction);
+
+            case RobotCommandFactory.Command.REPORT:
+                _robot.ReportLocation();
+                return true;
+
+            case RobotCommandFactory.Command.INVALID:
+            default:
+                return false;
+        }
+    }
+
+    private bool Move()
     {
         if (!_robot.IsRobotOnTable()) return false;
 
@@ -39,16 +65,16 @@ public class RobotCommand : IRobotCommand
         }
     }
 
-    public bool Rotate(Instruction instruction)
+    private bool Rotate(Instruction instruction)
     {
         switch (instruction.Command)
         {
-            case Command.LEFT:
+            case RobotCommandFactory.Command.LEFT:
                 RotateLeft(instruction);
 
                 break;
 
-            case Command.RIGHT:
+            case RobotCommandFactory.Command.RIGHT:
                 RotateRight(instruction);
                 break;
 
@@ -98,7 +124,7 @@ public class RobotCommand : IRobotCommand
         }
     }
 
-    public bool Place(Instruction instruction)
+    private bool Place(Instruction instruction)
     {
         if (_robot.SetPosition(instruction.Position.X, instruction.Position.Y))
         {

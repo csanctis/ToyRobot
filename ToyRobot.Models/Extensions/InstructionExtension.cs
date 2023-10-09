@@ -1,10 +1,12 @@
-﻿namespace ToyRobot.Models.Extensions;
+﻿using ToyRobot.Models.Commands;
+
+namespace ToyRobot.Models.Extensions;
 
 public static class InstructionExtension
 {
     public static bool IsCommandValid(this Instruction instruction)
     {
-        return instruction.Command != Command.INVALID &&
+        return instruction.Command != RobotCommandFactory.Command.INVALID &&
                instruction.Direction != Direction.INVALID;
     }
 

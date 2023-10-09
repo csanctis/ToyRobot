@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 using System.Text;
 using ToyRobot.Models.Commands;
@@ -10,6 +11,8 @@ public class Robot
     // This keeps track of all previous commands received by the robot
     private readonly List<Instruction> _instructionList = new();
 
+    private readonly IRobotCommand _robotCommand;
+
     // Allowed surface for the robot to roam
     private readonly TableSurface? _surface;
 
@@ -17,8 +20,6 @@ public class Robot
 
     // Position awareness of the robot
     private Point _lastPosition = new(-1, -1);
-
-    private IRobotCommand _robotCommand;
 
     public Robot(TableSurface surface)
     {
@@ -34,37 +35,19 @@ public class Robot
     public void ResetRobot()
     {
         _lastDirection = Direction.EMPTY;
-        _lastPosition = new(-1, -1);
+        _lastPosition = new Point(-1, -1);
     }
+
     public bool ExecuteCommand(Instruction instruction)
     {
-        if (!IsRobotOnTable() && instruction.Command != Command.PLACE)
-            return false;
-
-        // Keep history of all commands
-        _instructionList.Add(instruction);
-
-        switch (instruction.Command)
+        if (_robotCommand.ExecuteInstruction(instruction))
         {
-            case Command.PLACE:
-                return _robotCommand.Place(instruction);
-
-            case Command.MOVE:
-                return _robotCommand.Move();
-
-            case Command.LEFT:
-            case Command.RIGHT:
-                instruction.Direction = _lastDirection;
-                return _robotCommand.Rotate(instruction);
-
-            case Command.REPORT:
-                ReportLocation();
-                return true;
-
-            case Command.INVALID:
-            default:
-                return false;
+            // Keep history of all commands
+            _instructionList.Add(instruction);
+            return true;
         }
+
+        return false;
     }
 
     public bool SetDirection(Instruction instruction)
@@ -74,8 +57,8 @@ public class Robot
             _lastDirection = instruction.Direction;
             return true;
         }
-    
-        return false; 
+
+        return false;
     }
 
     public string GetDirectionSymbol()
@@ -147,4 +130,13 @@ public class Robot
 
         return sBuilder.ToString();
     }
+}
+
+public enum DirectionSymbol
+{
+    [Display(Name = "^")] NORTH = '^',
+    [Display(Name = "v")] SOUTH = 'v',
+    [Display(Name = ">")] EAST = '>',
+    [Display(Name = "<")] WEST = '<',
+    [Display(Name = "x")] INVALID = 'x'
 }
