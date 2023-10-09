@@ -28,7 +28,7 @@ internal class Program
         }
         catch (OperationCanceledException)
         {
-            Write(ConsoleColor.Yellow, _robot.PrintAllPreviousCommand()); 
+            Write(ConsoleColor.Yellow, _robot.PrintAllPreviousCommand());
             Console.WriteLine("See you later!");
         }
         catch (Exception ex)
@@ -71,12 +71,12 @@ internal class Program
             var userInput = Console.ReadLine();
             if (string.IsNullOrWhiteSpace(userInput)) continue;
 
-            var commandDetails = RobotCommandFactory.ParseAndGenerateCommand(userInput);
+            var instruction = RobotCommandFactory.ParseAndGenerateCommand(userInput);
 
-            if (commandDetails.IsCommandValid())
+            if (instruction.IsCommandValid())
             {
-                commandDetails.OriginalInput = userInput;
-                _robot.ExecuteCommand(commandDetails);
+                instruction.OriginalInput = userInput;
+                _robot.ExecuteCommand(instruction);
                 if (_tableSurface.AddRobotToTable(_robot))
                     Console.WriteLine(_tableSurface.PrintTable());
                 else
@@ -101,14 +101,20 @@ internal class Program
         _cancelTokenSrc.Cancel();
     }
 
-    private static void Write(params object[] oo)
+    private static void Write(params object?[] oo)
     {
         foreach (var o in oo)
-            if (o == null)
-                Console.ResetColor();
-            else if (o is ConsoleColor)
-                Console.ForegroundColor = (ConsoleColor)o;
-            else
-                Console.WriteLine(o.ToString());
+            switch (o)
+            {
+                case null:
+                    Console.ResetColor();
+                    break;
+                case ConsoleColor color:
+                    Console.ForegroundColor = color;
+                    break;
+                default:
+                    Console.WriteLine(o.ToString());
+                    break;
+            }
     }
 }

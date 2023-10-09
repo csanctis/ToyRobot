@@ -5,11 +5,11 @@ namespace ToyRobot.Models.Commands;
 
 public static class RobotCommandFactory
 {
-    public static CommandDetails ParseAndGenerateCommand(string input)
+    public static Instruction ParseAndGenerateCommand(string input)
     {
-        var commandDetail = new CommandDetails(input);
+        var instruction = new Instruction(input);
 
-        if (string.IsNullOrEmpty(input)) return commandDetail;
+        if (string.IsNullOrEmpty(input)) return instruction;
 
         // Sanitizing input
         var arguments = input.GetCommandArguments();
@@ -17,31 +17,31 @@ public static class RobotCommandFactory
         // PLACE command is the only one with multiple parameters
         if (arguments.Length > 1)
         {
-            commandDetail = ValidatePlaceArguments(arguments);
+            instruction = ValidatePlaceArguments(arguments);
         }
         else
         {
-            commandDetail.Command = GetCommand(input.GetCommand());
+            instruction.Command = GetCommand(input.GetCommand());
         }
-        return commandDetail;
+        return instruction;
     }
 
-    private static CommandDetails ValidatePlaceArguments(string[]? arguments)
+    private static Instruction ValidatePlaceArguments(string[] arguments)
     {
-        var commandDetail = new CommandDetails("")
+        var instruction = new Instruction("")
         {
             Command = Command.PLACE
         };
 
-        if (arguments.Length < 3) return commandDetail;
+        if (arguments.Length < 3) return instruction;
         
-        commandDetail.Position = GetPlaceCoordinates(arguments);
-        commandDetail.Direction = GetDirection(arguments[2]);
+        instruction.Position = GetPlaceCoordinates(arguments);
+        instruction.Direction = GetDirection(arguments[2]);
 
-        return commandDetail;
+        return instruction;
     }
 
-    private static Point GetPlaceCoordinates(string[]? arguments)
+    private static Point GetPlaceCoordinates(string[] arguments)
     {
         var success = int.TryParse(arguments[0], out int posX);
         var success2 = int.TryParse(arguments[1], out int posY);

@@ -14,7 +14,6 @@ namespace ToyRobot.Tests
 			Assert.Equal(6, surface.Columns);
 			Robot robot = new Robot(surface);
 
-
             var commandParsed = RobotCommandFactory.ParseAndGenerateCommand("PLACE 5,2,NORTH");
 			Assert.True(commandParsed.Command == Command.PLACE);
 

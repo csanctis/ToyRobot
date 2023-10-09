@@ -1,5 +1,6 @@
 using System.Drawing;
 using System.Text;
+using ToyRobot.Models.Commands;
 using ToyRobot.Models.Extensions;
 
 namespace ToyRobot.Models;
@@ -7,124 +8,69 @@ namespace ToyRobot.Models;
 public class Robot
 {
     // This keeps track of all previous commands received by the robot
-    private readonly List<CommandDetails> _commandsList = new();
+    private readonly List<Instruction> _instructionList = new();
+
+    // Allowed surface for the robot to roam
+    private readonly TableSurface? _surface;
 
     private Direction _lastDirection = Direction.EMPTY;
 
     // Position awareness of the robot
     private Point _lastPosition = new(-1, -1);
 
-    // Allowed surface for the robot to roam
-    private readonly TableSurface _surface;
+    private IRobotCommand _robotCommand;
 
     public Robot(TableSurface surface)
     {
         _surface = surface;
+        _robotCommand = new RobotCommand(this);
     }
 
-    // UI symbols to represent the robot orientation
-    private string _northDirection => "^";
-
-    private string _southDirection => "v";
-    private string _eastDirection => ">";
-    private string _westDirection => "<";
-    private string _invalidDirection => "x";
-
-    public bool ExecuteCommand(CommandDetails command)
+    public Robot()
     {
-        if (IsRobotOnTable() || command.Command == Command.PLACE)
-        {
-            // Keep history of all commands
-            _commandsList.Add(command);
-
-            switch (command.Command)
-            {
-                case Command.PLACE:
-                    return Place(command);
-
-                case Command.MOVE:
-                    return Move();
-
-                case Command.LEFT:
-                case Command.RIGHT:
-                    _lastDirection = Rotate(command);
-                    return true;
-
-                case Command.REPORT:
-                    Report();
-                    return true;
-
-                case Command.INVALID:
-                default:
-                    return false;
-            }
-        }
-
-        return false;
+        _robotCommand = new RobotCommand(this);
     }
 
-    private bool Move()
+    public bool ExecuteCommand(Instruction instruction)
     {
-        switch (_lastDirection)
+        if (!IsRobotOnTable() && instruction.Command != Command.PLACE)
+            return false;
+
+        // Keep history of all commands
+        _instructionList.Add(instruction);
+
+        switch (instruction.Command)
         {
-            case Direction.NORTH:
-                _lastPosition.Y = _lastPosition.Y + 1 < _surface.Rows ? _lastPosition.Y + 1 : _lastPosition.Y;
-                return ShiftPosition(_lastPosition, _lastDirection);
+            case Command.PLACE:
+                return _robotCommand.Place(instruction);
 
-            case Direction.SOUTH:
-                _lastPosition.Y = _lastPosition.Y - 1 >= 0 ? _lastPosition.Y - 1 : _lastPosition.Y;
-                return ShiftPosition(_lastPosition, _lastDirection);
+            case Command.MOVE:
+                return _robotCommand.Move();
 
-            case Direction.EAST:
-                _lastPosition.X = _lastPosition.X + 1 < _surface.Columns ? _lastPosition.X + 1 : _lastPosition.X;
-                return ShiftPosition(_lastPosition, _lastDirection);
+            case Command.LEFT:
+            case Command.RIGHT:
+                instruction.Direction = _lastDirection;
+                return _robotCommand.Rotate(instruction);
 
-            case Direction.WEST:
-                _lastPosition.X = _lastPosition.X - 1 >= 0 ? _lastPosition.X - 1 : _lastPosition.X;
-                return ShiftPosition(_lastPosition, _lastDirection);
+            case Command.REPORT:
+                ReportLocation();
+                return true;
 
+            case Command.INVALID:
             default:
                 return false;
         }
     }
 
-    private Direction Rotate(CommandDetails command)
+    public bool SetDirection(Instruction instruction)
     {
-        switch (_lastDirection)
+        if (IsRobotOnTable() && instruction.IsDirectionValid())
         {
-            case Direction.NORTH:
-                if (command.Command == Command.LEFT)
-                    return Direction.WEST;
-                if (command.Command == Command.RIGHT)
-                    return Direction.EAST;
-                break;
-
-            case Direction.SOUTH:
-                if (command.Command == Command.LEFT)
-                    return Direction.EAST;
-                if (command.Command == Command.RIGHT)
-                    return Direction.WEST;
-                break;
-
-            case Direction.EAST:
-                if (command.Command == Command.LEFT)
-                    return Direction.NORTH;
-                if (command.Command == Command.RIGHT)
-                    return Direction.SOUTH;
-                break;
-
-            case Direction.WEST:
-                if (command.Command == Command.LEFT)
-                    return Direction.SOUTH;
-                if (command.Command == Command.RIGHT)
-                    return Direction.NORTH;
-                break;
-
-            default:
-                return _lastDirection;
+            _lastDirection = instruction.Direction;
+            return true;
         }
-
-        return _lastDirection;
+    
+        return false; 
     }
 
     public string GetDirectionSymbol()
@@ -132,52 +78,41 @@ public class Robot
         switch (_lastDirection)
         {
             case Direction.NORTH:
-                return _northDirection;
+                return DirectionSymbol.NORTH.GetEnumDisplayName();
 
             case Direction.SOUTH:
-                return _southDirection;
+                return DirectionSymbol.SOUTH.GetEnumDisplayName();
 
             case Direction.EAST:
-                return _eastDirection;
+                return DirectionSymbol.EAST.GetEnumDisplayName();
 
             case Direction.WEST:
-                return _westDirection;
+                return DirectionSymbol.WEST.GetEnumDisplayName();
 
             default:
-                return _invalidDirection;
+                return DirectionSymbol.INVALID.GetEnumDisplayName();
         }
     }
 
-    private bool Place(CommandDetails command)
-    {
-        if (command.IsDirectionValid())
-            return ShiftPosition(command.Position, command.Direction);
-
-        return false;
-    }
-
-    private bool ShiftPosition(Point position, Direction direction)
-    {
-        var isValid = ValidatePosition(position.X, position.Y);
-        if (!isValid) return false;
-
-        // Update position and get new symbol
-        _lastPosition = position;
-        if (direction != Direction.EMPTY)
-            _lastDirection = direction;
-
-        return true;
-    }
-
-    public string Report()
+    public string ReportLocation()
     {
         Console.WriteLine($"{_lastPosition.X},{_lastPosition.Y},{_lastDirection}");
         return $"{_lastPosition.X},{_lastPosition.Y},{_lastDirection}";
     }
 
-    public Point GetLocation()
+    public Point GetPosition()
     {
         return _lastPosition;
+    }
+
+    public bool SetPosition(int x, int y)
+    {
+        if (!IsValidMove(x, y))
+            return false;
+
+        _lastPosition.X = x;
+        _lastPosition.Y = y;
+        return true;
     }
 
     public Direction GetDirection()
@@ -187,21 +122,23 @@ public class Robot
 
     public bool IsRobotOnTable()
     {
-        return _lastPosition is { X: >= 0, Y: >= 0 };
+        return _surface != null && _lastPosition is { X: >= 0, Y: >= 0 };
     }
 
-    private bool ValidatePosition(int x, int y)
+    public bool IsRobotOnThisPosition(int x, int y)
+    {
+        return _lastPosition.X == x && _lastPosition.Y == y;
+    }
+
+    private bool IsValidMove(int x, int y)
     {
         return !(x < 0 || x >= _surface.Rows) && !(y < 0 || y >= _surface.Columns);
     }
 
     public string PrintAllPreviousCommand()
     {
-        StringBuilder sBuilder = new StringBuilder();
-        foreach (var cd in _commandsList)
-        {
-            sBuilder.AppendLine(cd.OriginalInput);
-        }
+        var sBuilder = new StringBuilder();
+        foreach (var cd in _instructionList) sBuilder.AppendLine(cd.OriginalInput);
 
         return sBuilder.ToString();
     }

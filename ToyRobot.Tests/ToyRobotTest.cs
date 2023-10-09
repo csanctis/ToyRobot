@@ -41,10 +41,10 @@ namespace ToyRobot.Tests
             robot.ExecuteCommand(commandParsed);
 
             Assert.Equal(Direction.EMPTY, robot.GetDirection());
-			Assert.Equal(-1, robot.GetLocation().X);
-			Assert.Equal(-1, robot.GetLocation().Y);
+			Assert.Equal(-1, robot.GetPosition().X);
+			Assert.Equal(-1, robot.GetPosition().Y);
 
-			Assert.Equal("-1,-1,EMPTY", robot.Report());
+			Assert.Equal("-1,-1,EMPTY", robot.ReportLocation());
 		}
 
         [Fact]
@@ -59,10 +59,10 @@ namespace ToyRobot.Tests
 			Assert.False(result);
 
             Assert.Equal(Direction.EMPTY, robot.GetDirection());
-            Assert.Equal(-1, robot.GetLocation().X);
-            Assert.Equal(-1, robot.GetLocation().Y);
+            Assert.Equal(-1, robot.GetPosition().X);
+            Assert.Equal(-1, robot.GetPosition().Y);
 
-            Assert.Equal("-1,-1,EMPTY", robot.Report());
+            Assert.Equal("-1,-1,EMPTY", robot.ReportLocation());
         }
 
 		[Fact]
@@ -76,10 +76,10 @@ namespace ToyRobot.Tests
             robot.ExecuteCommand(commandParsed);
 
             Assert.Equal(Direction.EMPTY, robot.GetDirection());
-			Assert.Equal(-1, robot.GetLocation().X);
-			Assert.Equal(-1, robot.GetLocation().Y);
+			Assert.Equal(-1, robot.GetPosition().X);
+			Assert.Equal(-1, robot.GetPosition().Y);
 
-			Assert.Equal("-1,-1,EMPTY", robot.Report());
+			Assert.Equal("-1,-1,EMPTY", robot.ReportLocation());
 		}
 
         [Fact]
@@ -93,9 +93,9 @@ namespace ToyRobot.Tests
             robot.ExecuteCommand(commandParsed);
 
             Assert.Equal(Direction.EAST, robot.GetDirection());
-            Assert.Equal(1, robot.GetLocation().X);
-            Assert.Equal(1, robot.GetLocation().Y);
-            Assert.Equal("1,1,EAST", robot.Report());
+            Assert.Equal(1, robot.GetPosition().X);
+            Assert.Equal(1, robot.GetPosition().Y);
+            Assert.Equal("1,1,EAST", robot.ReportLocation());
         }
 
 		[Fact]
@@ -109,8 +109,8 @@ namespace ToyRobot.Tests
             robot.ExecuteCommand(commandParsed);
 
             Assert.Equal(Direction.NORTH, robot.GetDirection());
-			Assert.Equal(0, robot.GetLocation().X);
-			Assert.Equal(0, robot.GetLocation().Y);
+			Assert.Equal(0, robot.GetPosition().X);
+			Assert.Equal(0, robot.GetPosition().Y);
 
             commandParsed = RobotCommandFactory.ParseAndGenerateCommand("MOVE");
 			Assert.True(commandParsed.Command == Command.MOVE);
@@ -118,9 +118,9 @@ namespace ToyRobot.Tests
             robot.ExecuteCommand(commandParsed);
 
             Assert.Equal(Direction.NORTH, robot.GetDirection());
-			Assert.Equal(0, robot.GetLocation().X);
-			Assert.Equal(1, robot.GetLocation().Y);
-			Assert.Equal("0,1,NORTH", robot.Report());
+			Assert.Equal(0, robot.GetPosition().X);
+			Assert.Equal(1, robot.GetPosition().Y);
+			Assert.Equal("0,1,NORTH", robot.ReportLocation());
 		}
 
 		[Fact]
@@ -133,41 +133,41 @@ namespace ToyRobot.Tests
 			robot.ExecuteCommand(commandParsed);
 
 			Assert.Equal(Direction.EAST, robot.GetDirection());
-			Assert.Equal(1, robot.GetLocation().X);
-			Assert.Equal(2, robot.GetLocation().Y);
+			Assert.Equal(1, robot.GetPosition().X);
+			Assert.Equal(2, robot.GetPosition().Y);
 
 			commandParsed = RobotCommandFactory.ParseAndGenerateCommand("MOVE");
 			Assert.True(commandParsed.Command == Command.MOVE);
 			robot.ExecuteCommand(commandParsed);
 
 			Assert.Equal(Direction.EAST, robot.GetDirection());
-			Assert.Equal(2, robot.GetLocation().X);
-			Assert.Equal(2, robot.GetLocation().Y);
+			Assert.Equal(2, robot.GetPosition().X);
+			Assert.Equal(2, robot.GetPosition().Y);
 
 			commandParsed = RobotCommandFactory.ParseAndGenerateCommand("MOVE");
 			Assert.True(commandParsed.Command == Command.MOVE);
 			robot.ExecuteCommand(commandParsed);
 
 			Assert.Equal(Direction.EAST, robot.GetDirection());
-			Assert.Equal(3, robot.GetLocation().X);
-			Assert.Equal(2, robot.GetLocation().Y);
+			Assert.Equal(3, robot.GetPosition().X);
+			Assert.Equal(2, robot.GetPosition().Y);
 
 			commandParsed = RobotCommandFactory.ParseAndGenerateCommand("LEFT");
 			Assert.True(commandParsed.Command == Command.LEFT);
 			robot.ExecuteCommand(commandParsed);
 
 			Assert.Equal(Direction.NORTH, robot.GetDirection());
-			Assert.Equal(3, robot.GetLocation().X);
-			Assert.Equal(2, robot.GetLocation().Y);
+			Assert.Equal(3, robot.GetPosition().X);
+			Assert.Equal(2, robot.GetPosition().Y);
 
 			commandParsed = RobotCommandFactory.ParseAndGenerateCommand("MOVE");
 			Assert.True(commandParsed.Command == Command.MOVE);
 			robot.ExecuteCommand(commandParsed);
 
 			Assert.Equal(Direction.NORTH, robot.GetDirection());
-			Assert.Equal(3, robot.GetLocation().X);
-			Assert.Equal(3, robot.GetLocation().Y);
-			Assert.Equal("3,3,NORTH", robot.Report());
+			Assert.Equal(3, robot.GetPosition().X);
+			Assert.Equal(3, robot.GetPosition().Y);
+			Assert.Equal("3,3,NORTH", robot.ReportLocation());
 		}
 
 		[Fact]
@@ -180,50 +180,50 @@ namespace ToyRobot.Tests
 			robot.ExecuteCommand(commandParsed);
 
 			Assert.Equal(Direction.EAST, robot.GetDirection());
-			Assert.Equal(1, robot.GetLocation().X);
-			Assert.Equal(2, robot.GetLocation().Y);
+			Assert.Equal(1, robot.GetPosition().X);
+			Assert.Equal(2, robot.GetPosition().Y);
 
 			commandParsed = RobotCommandFactory.ParseAndGenerateCommand("MOVE");
 			Assert.True(commandParsed.Command == Command.MOVE);
 			robot.ExecuteCommand(commandParsed);
 
 			Assert.Equal(Direction.EAST, robot.GetDirection());
-			Assert.Equal(2, robot.GetLocation().X);
-			Assert.Equal(2, robot.GetLocation().Y);
+			Assert.Equal(2, robot.GetPosition().X);
+			Assert.Equal(2, robot.GetPosition().Y);
 
 			commandParsed = RobotCommandFactory.ParseAndGenerateCommand("LEFT");
 			Assert.True(commandParsed.Command == Command.LEFT);
 			robot.ExecuteCommand(commandParsed);
 
 			Assert.Equal(Direction.NORTH, robot.GetDirection());
-			Assert.Equal(2, robot.GetLocation().X);
-			Assert.Equal(2, robot.GetLocation().Y);
+			Assert.Equal(2, robot.GetPosition().X);
+			Assert.Equal(2, robot.GetPosition().Y);
 
 			commandParsed = RobotCommandFactory.ParseAndGenerateCommand("MOVE");
 			Assert.True(commandParsed.Command == Command.MOVE);
 			robot.ExecuteCommand(commandParsed);
 
 			Assert.Equal(Direction.NORTH, robot.GetDirection());
-			Assert.Equal(2, robot.GetLocation().X);
-			Assert.Equal(3, robot.GetLocation().Y);
+			Assert.Equal(2, robot.GetPosition().X);
+			Assert.Equal(3, robot.GetPosition().Y);
 
 			commandParsed = RobotCommandFactory.ParseAndGenerateCommand("PLACE 3,1, NORTH");
 			Assert.True(commandParsed.Command == Command.PLACE);
 			robot.ExecuteCommand(commandParsed);
 
 			Assert.Equal(Direction.NORTH, robot.GetDirection());
-			Assert.Equal(3, robot.GetLocation().X);
-			Assert.Equal(1, robot.GetLocation().Y);
+			Assert.Equal(3, robot.GetPosition().X);
+			Assert.Equal(1, robot.GetPosition().Y);
 
 			commandParsed = RobotCommandFactory.ParseAndGenerateCommand("MOVE");
 			Assert.True(commandParsed.Command == Command.MOVE);
 			robot.ExecuteCommand(commandParsed);
 
 			Assert.Equal(Direction.NORTH, robot.GetDirection());
-			Assert.Equal(3, robot.GetLocation().X);
-			Assert.Equal(2, robot.GetLocation().Y);
+			Assert.Equal(3, robot.GetPosition().X);
+			Assert.Equal(2, robot.GetPosition().Y);
 
-			Assert.Equal("3,2,NORTH", robot.Report());
+			Assert.Equal("3,2,NORTH", robot.ReportLocation());
 		}
 
 		[Fact]
@@ -236,8 +236,8 @@ namespace ToyRobot.Tests
 			robot.ExecuteCommand(commandParsed);
 
 			Assert.Equal(Direction.EAST, robot.GetDirection());
-			Assert.Equal(0, robot.GetLocation().X);
-			Assert.Equal(0, robot.GetLocation().Y);
+			Assert.Equal(0, robot.GetPosition().X);
+			Assert.Equal(0, robot.GetPosition().Y);
 
 			// push robot to edge of table
 			for (int i = 0; i < surface.Columns - 1; i++)
@@ -247,8 +247,8 @@ namespace ToyRobot.Tests
 				robot.ExecuteCommand(commandParsed);
 
 				Assert.Equal(Direction.EAST, robot.GetDirection());
-				Assert.Equal(i + 1, robot.GetLocation().X);
-				Assert.Equal(0, robot.GetLocation().Y);
+				Assert.Equal(i + 1, robot.GetPosition().X);
+				Assert.Equal(0, robot.GetPosition().Y);
 			}
 
 			// try to push robot out of table
@@ -257,18 +257,18 @@ namespace ToyRobot.Tests
 			robot.ExecuteCommand(commandParsed);
 
 			Assert.Equal(Direction.EAST, robot.GetDirection());
-			Assert.Equal(surface.Columns - 1, robot.GetLocation().X);
-			Assert.Equal(0, robot.GetLocation().Y);
-			Assert.Equal("5,0,EAST", robot.Report());
+			Assert.Equal(surface.Columns - 1, robot.GetPosition().X);
+			Assert.Equal(0, robot.GetPosition().Y);
+			Assert.Equal("5,0,EAST", robot.ReportLocation());
 
 			commandParsed = RobotCommandFactory.ParseAndGenerateCommand("MOVE");
 			Assert.True(commandParsed.Command == Command.MOVE);
 			robot.ExecuteCommand(commandParsed);
 
 			Assert.Equal(Direction.EAST, robot.GetDirection());
-			Assert.Equal(surface.Columns - 1, robot.GetLocation().X);
-			Assert.Equal(0, robot.GetLocation().Y);
-			Assert.Equal("5,0,EAST", robot.Report());
+			Assert.Equal(surface.Columns - 1, robot.GetPosition().X);
+			Assert.Equal(0, robot.GetPosition().Y);
+			Assert.Equal("5,0,EAST", robot.ReportLocation());
 		}
 	}
 }

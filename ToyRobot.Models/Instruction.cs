@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Drawing;
 
 namespace ToyRobot.Models;
 
@@ -12,6 +13,20 @@ public enum Direction
     EMPTY = 0
 }
 
+public enum DirectionSymbol
+{
+    [Display(Name = "^")]
+    NORTH = '^',
+    [Display(Name = "v")]
+    SOUTH = 'v',
+    [Display(Name = ">")]
+    EAST = '>',
+    [Display(Name = "<")]
+    WEST = '<',
+    [Display(Name = "x")]
+    INVALID = 'x'
+}
+
 public enum Command
 {
     PLACE = 1,
@@ -22,9 +37,9 @@ public enum Command
     INVALID = -1
 }
 
-public class CommandDetails
+public class Instruction
 {
-    public CommandDetails(string input)
+    public Instruction(string input)
     {
         OriginalInput = input;
     }

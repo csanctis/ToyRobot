@@ -4,14 +4,14 @@ namespace ToyRobot.Models
 {
 	public class TableSurface
 	{
-		private string[,] _tableSurface;
-		private int _rows;
-		private int _columns;
+		private readonly string[,] _tableSurface;
+		private readonly int _rows;
+		private readonly int _columns;
 
 		public int Rows => this._rows;
 		public int Columns => this._columns;
 
-		private Robot _robotOnTable = null;
+		private Robot _robotOnTable = new ();
 
 		private static string _noDirection => "O";
 
@@ -64,10 +64,8 @@ namespace ToyRobot.Models
 		/// <returns></returns>
 		private string GetDirectionSymbol(int x, int y)
 		{
-			if (_robotOnTable != null &&
-                _robotOnTable.IsRobotOnTable() &&
-                _robotOnTable.GetLocation().X == x
-                && _robotOnTable.GetLocation().Y == y)
+			if (_robotOnTable.IsRobotOnTable() &&
+                _robotOnTable.IsRobotOnThisPosition(x, y))
 			{
 				return _robotOnTable.GetDirectionSymbol();
 			}
