@@ -1,6 +1,7 @@
 ﻿using ToyRobot.Models;
 using ToyRobot.Models.Commands;
 using Xunit;
+using static ToyRobot.Models.Commands.RobotCommandFactory;
 
 namespace ToyRobot.Tests
 {
