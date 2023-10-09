@@ -1,4 +1,5 @@
 ﻿using ToyRobot.Models;
+using ToyRobot.Models.Commands;
 using Xunit;
 
 namespace ToyRobot.Tests
@@ -12,14 +13,15 @@ namespace ToyRobot.Tests
 			Assert.Equal(6, surface.Rows);
 			Assert.Equal(6, surface.Columns);
 			Robot robot = new Robot(surface);
-			surface.AddRobotToTable(robot);
 
-			var commandParsed = robot.ParseInputAndGenerateCommand("PLACE 5,2,NORTH");
+            var commandParsed = RobotCommandFactory.ParseAndGenerateCommand("PLACE 5,2,NORTH");
 			Assert.True(commandParsed.Command == Command.PLACE);
 
-			robot.ExecuteLastCommand();
+			robot.ExecuteCommand(commandParsed);
+            var isRobotOnTable = surface.AddRobotToTable(robot);
+            Assert.True(isRobotOnTable);
 
-			var print = surface.PrintTable();
+            var print = surface.PrintTable();
 
 			string expected =
 				@"" + System.Environment.NewLine +
@@ -40,12 +42,13 @@ namespace ToyRobot.Tests
 			Assert.Equal(6, surface.Rows);
 			Assert.Equal(6, surface.Columns);
 			Robot robot = new Robot(surface);
-			surface.AddRobotToTable(robot);
 
-			var commandParsed = robot.ParseInputAndGenerateCommand("PLACE 0,0,SOUTH");
+            var commandParsed = RobotCommandFactory.ParseAndGenerateCommand("PLACE 0,0,SOUTH");
 			Assert.True(commandParsed.Command == Command.PLACE);
 
-			robot.ExecuteLastCommand();
+			robot.ExecuteCommand(commandParsed);
+			var isRobotOnTable = surface.AddRobotToTable(robot);
+			Assert.True(isRobotOnTable);
 
 			var print = surface.PrintTable();
 
@@ -68,14 +71,15 @@ namespace ToyRobot.Tests
 			Assert.Equal(6, surface.Rows);
 			Assert.Equal(6, surface.Columns);
 			Robot robot = new Robot(surface);
-			surface.AddRobotToTable(robot);
 
-			var commandParsed = robot.ParseInputAndGenerateCommand("PLACE 5,5,WEST");
+            var commandParsed = RobotCommandFactory.ParseAndGenerateCommand("PLACE 5,5,WEST");
 			Assert.True(commandParsed.Command == Command.PLACE);
 
-			robot.ExecuteLastCommand();
+			robot.ExecuteCommand(commandParsed);
+            var isRobotOnTable = surface.AddRobotToTable(robot);
+            Assert.True(isRobotOnTable);
 
-			var print = surface.PrintTable();
+            var print = surface.PrintTable();
 
 			string expected =
 				@"" + System.Environment.NewLine +
