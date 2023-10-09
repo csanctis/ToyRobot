@@ -80,8 +80,17 @@ public class RobotCommand : IRobotCommand
 
     public bool Place(Instruction instruction)
     {
-        var posResult = _robot.SetPosition(instruction.Position.X, instruction.Position.Y);
-        var dirResult = _robot.SetDirection(instruction);
-        return posResult && dirResult;
+        if (_robot.SetPosition(instruction.Position.X, instruction.Position.Y))
+        {
+            if (_robot.SetDirection(instruction))
+            {
+                return true;
+            }
+
+            // If direction is wrong, reset position to out of table
+            _robot.ResetRobot();
+        }
+
+        return false;
     }
 }

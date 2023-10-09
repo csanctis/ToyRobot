@@ -31,6 +31,11 @@ public class Robot
         _robotCommand = new RobotCommand(this);
     }
 
+    public void ResetRobot()
+    {
+        _lastDirection = Direction.EMPTY;
+        _lastPosition = new(-1, -1);
+    }
     public bool ExecuteCommand(Instruction instruction)
     {
         if (!IsRobotOnTable() && instruction.Command != Command.PLACE)
@@ -132,7 +137,7 @@ public class Robot
 
     private bool IsValidMove(int x, int y)
     {
-        return !(x < 0 || x >= _surface.Rows) && !(y < 0 || y >= _surface.Columns);
+        return !(x < 0 || x >= _surface?.Rows) && !(y < 0 || y >= _surface?.Columns);
     }
 
     public string PrintAllPreviousCommand()
