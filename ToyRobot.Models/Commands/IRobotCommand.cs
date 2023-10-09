@@ -45,36 +45,57 @@ public class RobotCommand : IRobotCommand
         {
             case Command.LEFT:
                 if (instruction.Direction == Direction.NORTH)
+                {
                     instruction.Direction = Direction.WEST;
+                    break;
+                }
 
                 if (instruction.Direction == Direction.SOUTH)
+                {
                     instruction.Direction = Direction.EAST;
+                    break;
+                }
 
                 if (instruction.Direction == Direction.EAST)
+                {
                     instruction.Direction = Direction.NORTH;
+                    break;
+                }
 
                 if (instruction.Direction == Direction.WEST)
+                {
                     instruction.Direction = Direction.SOUTH;
+                }
+
                 break;
 
             case Command.RIGHT:
                 if (instruction.Direction == Direction.NORTH)
+                {
                     instruction.Direction = Direction.EAST;
+                    break;
+                }
 
                 if (instruction.Direction == Direction.SOUTH)
+                {
                     instruction.Direction = Direction.WEST;
+                    break;
+                }
 
                 if (instruction.Direction == Direction.EAST)
+                {
                     instruction.Direction = Direction.SOUTH;
+                    break;
+                }
 
-                if (instruction.Direction == Direction.WEST)
-                    instruction.Direction = Direction.NORTH;
+                if (instruction.Direction == Direction.WEST) instruction.Direction = Direction.NORTH;
                 break;
 
             default:
                 instruction.Direction = Direction.NORTH;
                 break;
         }
+
         return _robot.SetDirection(instruction);
     }
 
@@ -82,10 +103,7 @@ public class RobotCommand : IRobotCommand
     {
         if (_robot.SetPosition(instruction.Position.X, instruction.Position.Y))
         {
-            if (_robot.SetDirection(instruction))
-            {
-                return true;
-            }
+            if (_robot.SetDirection(instruction)) return true;
 
             // If direction is wrong, reset position to out of table
             _robot.ResetRobot();

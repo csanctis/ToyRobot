@@ -226,7 +226,45 @@ namespace ToyRobot.Tests
 			Assert.Equal("3,2,NORTH", robot.ReportLocation());
 		}
 
-		[Fact]
+        [Fact]
+        public void NavigationTest4()
+        {
+            var surface = new TableSurface(6, 6);
+            var robot = new Robot(surface);
+            var commandParsed = RobotCommandFactory.ParseAndGenerateCommand("PLACE 5,5,SOUTH");
+            Assert.True(commandParsed.Command == Command.PLACE);
+            robot.ExecuteCommand(commandParsed);
+
+            Assert.Equal(Direction.SOUTH, robot.GetDirection());
+            Assert.Equal(5, robot.GetPosition().X);
+            Assert.Equal(5, robot.GetPosition().Y);
+
+            commandParsed = RobotCommandFactory.ParseAndGenerateCommand("MOVE");
+            Assert.True(commandParsed.Command == Command.MOVE);
+            robot.ExecuteCommand(commandParsed);
+
+            Assert.Equal(Direction.SOUTH, robot.GetDirection());
+            Assert.Equal(5, robot.GetPosition().X);
+            Assert.Equal(4, robot.GetPosition().Y);
+
+            commandParsed = RobotCommandFactory.ParseAndGenerateCommand("MOVE");
+            Assert.True(commandParsed.Command == Command.MOVE);
+            robot.ExecuteCommand(commandParsed);
+
+            Assert.Equal(Direction.SOUTH, robot.GetDirection());
+            Assert.Equal(5, robot.GetPosition().X);
+            Assert.Equal(3, robot.GetPosition().Y);
+
+            commandParsed = RobotCommandFactory.ParseAndGenerateCommand("RIGHT");
+            Assert.True(commandParsed.Command == Command.RIGHT);
+            robot.ExecuteCommand(commandParsed);
+
+            Assert.Equal(Direction.WEST, robot.GetDirection());
+            Assert.Equal(5, robot.GetPosition().X);
+            Assert.Equal(3, robot.GetPosition().Y);
+        }
+
+        [Fact]
 		public void PushRobotOutOfTableTest()
 		{
 			var surface = new TableSurface(6, 6);
