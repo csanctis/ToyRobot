@@ -44,51 +44,12 @@ public class RobotCommand : IRobotCommand
         switch (instruction.Command)
         {
             case Command.LEFT:
-                if (instruction.Direction == Direction.NORTH)
-                {
-                    instruction.Direction = Direction.WEST;
-                    break;
-                }
-
-                if (instruction.Direction == Direction.SOUTH)
-                {
-                    instruction.Direction = Direction.EAST;
-                    break;
-                }
-
-                if (instruction.Direction == Direction.EAST)
-                {
-                    instruction.Direction = Direction.NORTH;
-                    break;
-                }
-
-                if (instruction.Direction == Direction.WEST)
-                {
-                    instruction.Direction = Direction.SOUTH;
-                }
+                RotateLeft(instruction);
 
                 break;
 
             case Command.RIGHT:
-                if (instruction.Direction == Direction.NORTH)
-                {
-                    instruction.Direction = Direction.EAST;
-                    break;
-                }
-
-                if (instruction.Direction == Direction.SOUTH)
-                {
-                    instruction.Direction = Direction.WEST;
-                    break;
-                }
-
-                if (instruction.Direction == Direction.EAST)
-                {
-                    instruction.Direction = Direction.SOUTH;
-                    break;
-                }
-
-                if (instruction.Direction == Direction.WEST) instruction.Direction = Direction.NORTH;
+                RotateRight(instruction);
                 break;
 
             default:
@@ -97,6 +58,44 @@ public class RobotCommand : IRobotCommand
         }
 
         return _robot.SetDirection(instruction);
+    }
+
+    private static void RotateRight(Instruction instruction)
+    {
+        switch (instruction.Direction)
+        {
+            case Direction.NORTH:
+                instruction.Direction = Direction.EAST;
+                break;
+            case Direction.SOUTH:
+                instruction.Direction = Direction.WEST;
+                break;
+            case Direction.EAST:
+                instruction.Direction = Direction.SOUTH;
+                break;
+            case Direction.WEST:
+                instruction.Direction = Direction.NORTH;
+                break;
+        }
+    }
+
+    private static void RotateLeft(Instruction instruction)
+    {
+        switch (instruction.Direction)
+        {
+            case Direction.NORTH:
+                instruction.Direction = Direction.WEST;
+                break;
+            case Direction.SOUTH:
+                instruction.Direction = Direction.EAST;
+                break;
+            case Direction.EAST:
+                instruction.Direction = Direction.NORTH;
+                break;
+            case Direction.WEST:
+                instruction.Direction = Direction.SOUTH;
+                break;
+        }
     }
 
     public bool Place(Instruction instruction)
