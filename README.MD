@@ -15,7 +15,7 @@
 
 ## Installation
 
-To run this application, youn will need the latest [.NetCore 6 framework](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)) installed.
+To run this application, youn will need the latest [.NetCore framework](https://dotnet.microsoft.com/en-us/download/dotnet)) installed.
 Open the solution in Visual Studio 2019 upwards and build it.
 
 ## Example Input and Output
